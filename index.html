@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="cb/style.css"/>
+    <!-- include the needed css for the texteditor -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="dist/yellow-text.js"></script>
+    <style type="text/css">
+        input[type="text"] {
+            width: 400px;
+        }
+
+        #js-textarea, #liststyle {
+            line-height: 20px;
+            padding: 8px;
+
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+
+            display: block;
+            width: 100%;
+
+            position: relative;
+            background-color: #fbfbfb;
+            border: 1px solid #CCC;
+
+            font: normal 13px arial, tahoma, helvetica, sans-serif;
+        }
+
+        #liststyle {
+            display: inline;
+            padding-left: 0;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px dotted #ccc;
+        }
+    </style>
+</head>
+
+<body>
+<form action="#" method="post" id="js-editor-form">
+
+
+    <input id="js-number" type="text" value="5"/>
+    <input id="js-textarea" type="text" value="banana"/>
+    <input id="liststyle" type="text" value="pony"/>
+
+    <div><input type="submit" name="submit" value="Save form" class="btn"></div>
+    <div id="content">
+    </div>
+</form>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var textOptions = {
+            defaultActions: ["bold", "italic", "link"]
+        };
+        $(':input[type="text"]').each(function () {
+            $(this).YellowText(textOptions);
+
+            // if we want to do things with it
+            var editor = $(this).data('plugin_YellowText');
+        });
+    });
+</script>
+</body>
+</html>

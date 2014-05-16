@@ -79,7 +79,7 @@
 
       // Set new content in the editor
       setContentToEditor: function( content ) {
-        $( this.editor ).contents().find("body").append( content );
+        $( this.editor ).contents().find("body > div").append( content );
         return content;
       },
 
@@ -96,34 +96,38 @@
 
       // Get content from the editor
       getContentFromEditor: function() {
-        return $( this.editor ).contents().find("body").html();
+        return $( this.editor ).contents().find("body > div").html();
       },
 
       /**
       * Render the plugin 
       */
       render: function() {
-
+          // Get the styles for the element, used for ensuring exact same styling in the iframe
+          var styles = [];
+          var $el = $(this.element);
+          $.each(["background", "font", "border", "border-radius", "box-shadow", "box-sizing", "padding", "direction", "height", "width","text-align", "text-decoration", "text-shadow", "word-spacing"], function(key, property) {
+              var v = $el.css(property);
+              styles.push(property + ":" + v + ";");
+          });
+          styles.push("margin: 0;");
+          styles = styles.join("");
         // Hide the current text field
         $( this.element ).hide();
 
         // Create a container which will hold or text editor
-        this.container = $("<div />").addClass( this.options.containerClass ).css({
-          "float"   : "left",
-          "width"   : this.options.width,
-          "border"  : "1px solid #ccc"
-        });
+        this.container = $("<div />").addClass( this.options.containerClass );
 
         // Add the container after the element where we bind this plugin too
         $( this.element ).after( this.container );
 
         // Create the iFrame and append to the previously created container
         this.editor = $("<iframe />").addClass( this.options.iFrameClass ).css({
-          "float"   : "left",
-          "width"   : this.options.width,
-          "height"  : this.options.height,
+          "width"   : $el.outerWidth(),
+          "height"  : $el.outerHeight(),
           "border"  : 0,
-          "overflow": "hidden"
+          "overflow": "hidden",
+          "margin": $el.css("margin")
         }).appendTo( this.container ).get(0);
 
         // Make the editor work in all browsers
@@ -132,22 +136,25 @@
         this.editor.contentWindow.document.designMode = "on";
 
         // Set the standard fonts etc
-        $( this.editor ).contents().find("body").css({
-          "word-wrap"     : "break-word",
-          "font-family"   : this.options.defaultFont,
-          "font-size"     : this.options.defaultFontSize,
-          "color"         : this.options.defaultFontColor
+          console.log(styles);
+          var div = $("<div />").attr("style", styles);
+        $( this.editor ).contents().find("body").append(div).css({
+            margin: 0,
+            padding: 0,
+            whiteSpace: "nowrap"
         });
 
         // Add some css to the iFrame
-        var iFrameCSS = "<style type=\"text/css\">body{padding:2%;}p{margin:0;}</style>";
-        $( this.editor ).contents().find("head").append(iFrameCSS);
+        //var iFrameCSS = "<style type=\"text/css\">body{padding:2%;}p{margin:0;}</style>";
+        //$( this.editor ).contents().find("head").append(iFrameCSS);
 
         // Build the button container
-        this.buttons = $("<div />").addClass( this.options.buttonsClass ).css({
-          "float"   : "left",
-          "width"   : this.options.width
-        }).prependTo( this.container );
+          var zIndex = $el.css("z-index");
+          if (zIndex === "auto") {
+              zIndex = 0;
+          }
+          zIndex++;
+        this.buttons = $("<div />").addClass( this.options.buttonsClass ).css("z-index", zIndex).prependTo( this.container );
 
         // Render the buttons
         this.createButtons();
@@ -222,11 +229,26 @@
 
         // Bind to the keydown event while typing
         $( this.editor ).contents().find("body").on("keydown", function( e ) {
+            if (e.keyCode === 13) {
+                return false;
+            }
 
           // Look for the control or command key
           if( e.ctrlKey || e.metaKey ) {
             that.shortkey( e, this );
           }
+        });
+
+          // Handle paste
+        $( this.editor ).contents().find("body").on("paste", function( e ) {
+            e.preventDefault();
+
+            var text = e.originalEvent.clipboardData.getData("text/plain");
+            var temp = document.createElement("div");
+            temp.innerHTML = text;
+            text = temp.textContent.replace(/\r?\n|\r/g, "");
+
+            that.runCMD("insertText", text);
         });
 
         // Bind the keyup event, to check for changes
@@ -305,7 +327,7 @@
       /**
       * Run the actual command
       */
-      runCMD: function( cmd ) {
+      runCMD: function( cmd, value ) {
 
         // Check command for special actions and run it
         if( cmd === "image" ) {
@@ -325,6 +347,8 @@
         } else if( cmd === "link" ) {
           var link = prompt("URL (example: http://www.google.com): ");
           return this.editor.contentWindow.document.execCommand( "CreateLink", false, link);
+        } else if (cmd === "insertText") {
+            return this.editor.contentWindow.document.execCommand( cmd, false, value );
         } else {
           return this.editor.contentWindow.document.execCommand( cmd );
         }
