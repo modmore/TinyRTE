@@ -99,7 +99,7 @@
             // Get the styles for the element, used for ensuring exact same styling in the iframe
             var styles = [];
             var $el = $(this.element);
-            $.each(["background", "font", "border", "border-radius", "box-shadow", "box-sizing", "padding", "direction", "height", "width", "text-align", "text-decoration", "text-shadow", "word-spacing"], function (key, property) {
+            $.each(["background", "font", "border", "border-radius", "box-shadow", "box-sizing", "padding", "direction", "height", "width", "text-align", "text-decoration", "text-shadow", "word-spacing", "border-top-width", "border-right-width", "border-bottom-width", "border-left-width", "border-top-style", "border-right-style", "border-bottom-style", "border-left-style", "border-top-color", "border-right-color", "border-bottom-color", "border-left-color"], function (key, property) {
                 var v = $el.css(property);
                 styles.push(property + ":" + v + ";");
             });
@@ -116,11 +116,9 @@
 
             // Create the iFrame and append to the previously created container
             this.editor = $("<iframe />").addClass(this.options.iFrameClass).css({
-                "width": $el.outerWidth(),
-                "height": $el.outerHeight(),
-                "border": 0,
-                "overflow": "hidden",
-                "margin": $el.css("margin")
+                "width": "100%",
+                "height": $el.outerHeight() + 1,
+                "border": 0
             }).appendTo(this.container).get(0);
 
             // Make the editor work in all browsers
@@ -129,17 +127,14 @@
             this.editor.contentWindow.document.designMode = "on";
 
             // Set the standard fonts etc
-            console.log(styles);
             var div = $("<div />").attr("style", styles);
             $(this.editor).contents().find("body").append(div).css({
-                margin: 0,
-                padding: 0,
                 whiteSpace: "nowrap"
             });
 
             // Add some css to the iFrame
-            //var iFrameCSS = "<style type=\"text/css\">body{padding:2%;}p{margin:0;}</style>";
-            //$( this.editor ).contents().find("head").append(iFrameCSS);
+            var iFrameCSS = "<style type=\"text/css\">* {box-sizing: border-box;} html, body {border: 0; margin: 0; padding: 0;}</style>";
+            $( this.editor ).contents().find("head").append(iFrameCSS);
 
             // Build the button container
             var zIndex = $el.css("z-index");
@@ -252,6 +247,11 @@
 
                 // Call the callback
                 that.options.isContentChanged(changed);
+
+                if (changed) {
+                    that.cleanTheCode();
+                    that.setContentToTextarea(that.getContentFromEditor());
+                }
             });
 
             // Bind to the submit event of the form
@@ -322,6 +322,7 @@
          */
         runCMD: function (cmd, value) {
 
+            var execed = false;
             // Check command for special actions and run it
             if (cmd === "image") {
 
@@ -336,33 +337,37 @@
                 var url = ( typeof image !== "undefined" && image.length > 0 ) ? image : prompt("URL (example: http://www.google.com): ");
 
                 // Insert the image in the text editor
-                return this.editor.contentWindow.document.execCommand("InsertImage", false, url);
+                execed = this.editor.contentWindow.document.execCommand("InsertImage", false, url);
             } else if (cmd === "link") {
                 var link = prompt("URL (example: http://www.google.com): ");
-                return this.editor.contentWindow.document.execCommand("CreateLink", false, link);
+                execed = this.editor.contentWindow.document.execCommand("CreateLink", false, link);
             } else if (cmd === "insertText") {
-                return this.editor.contentWindow.document.execCommand(cmd, false, value);
+                execed = this.editor.contentWindow.document.execCommand(cmd, false, value);
             } else {
-                return this.editor.contentWindow.document.execCommand(cmd);
+                execed = this.editor.contentWindow.document.execCommand(cmd);
             }
+            this.cleanTheCode();
+            this.setContentToTextarea(this.getContentFromEditor());
+            return execed;
         },
 
         /**
          * Clean the mess of the browsers
          */
         cleanTheCode: function () {
+            var body = $(this.editor).contents().find("body").find("div");
 
             // Remove classes from br tag
-            $(this.editor).contents().find("body").find("br").removeAttr("class").unwrap();
+           body.find("br").removeAttr("class").unwrap();
 
             // Remove classes from ul tag
-            $(this.editor).contents().find("body").find("ul").removeAttr("class").unwrap();
+            body.find("ul").removeAttr("class").unwrap();
 
             // Remove classes from ol tag
-            $(this.editor).contents().find("body").find("ol").removeAttr("class").unwrap();
+            body.find("ol").removeAttr("class").unwrap();
 
-            // Remove all div tags
-            $(this.editor).contents().find("div").wrap("<p />").contents().unwrap();
+            // Remove spans, keeping the content
+            body.find("span").contents().unwrap();
         }
     };
 
