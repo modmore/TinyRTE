@@ -134,8 +134,10 @@
             $(this.editor).contents().find("body").append(div).css({
                 margin: 0,
                 padding: 0,
-                whiteSpace: "nowrap"
             });
+            if($(this).prop("tagName")=="input") {
+                div.css('whitespace','nowrap');
+            }
 
             // Add some css to the iFrame
             //var iFrameCSS = "<style type=\"text/css\">body{padding:2%;}p{margin:0;}</style>";
@@ -222,7 +224,7 @@
 
             // Bind to the keydown event while typing
             $(this.editor).contents().find("body").on("keydown", function (e) {
-                if (e.keyCode === 13) {
+                if (e.keyCode === 13 && $(this).prop("tagName")=="input") {
                     return false;
                 }
 
