@@ -1,8 +1,8 @@
 # TinyRTE
 
-TinyRTE is a simplistic editor. It is loosely based on [Yellow Text](stefanvermaas/yellow-text) by Stefan Vermaas, and was developed to offer basic text control (i.e. bold, italics, links) in [ContentBlocks](http://modmo.re/cb).
+TinyRTE is a simplistic editor. It is loosely based on [Yellow Text](https://github.com/stefanvermaas/yellow-text) by Stefan Vermaas, and was developed to offer basic text control (i.e. bold, italics, links) in [ContentBlocks](http://modmo.re/cb).
  
-TinyRTE only allows a single line of text by design.
+TinyRTE only allows a single line of text by design. 
 
 ## Usage (standalone)
 
