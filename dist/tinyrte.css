@@ -1,0 +1,87 @@
+/**
+*
+*	TinyRTE
+*	========================================
+*	This is a pre-made theme for the TinyRTE
+*	text editor and it's not needed to run
+*	the plugin, but sure helps make it look better.
+*
+*/
+.tinyrte-container {
+  position: relative; }
+
+.tinyrte-has-focus .tinyrte-buttons {
+  height: 30px;
+  opacity: 1; }
+
+/**
+*
+*	Buttons
+*	========================================
+*	This section styles the buttons and the
+*	button bar, that holds all the buttons.
+*
+*/
+.tinyrte-buttons {
+  background: #ddd;
+  border-radius: 5px 5px 0 0;
+  position: absolute;
+  left: 0px;
+  top: -30px;
+  width: auto;
+  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out; }
+  .tinyrte-buttons > a {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin: 8px;
+    font: 16px Georgia;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 1px #fff;
+    cursor: pointer; }
+  .tinyrte-buttons .bold {
+    font-weight: bold; }
+  .tinyrte-buttons .underline {
+    text-decoration: underline; }
+  .tinyrte-buttons .italic {
+    font-style: italic; }
+  .tinyrte-buttons .strikethrough {
+    text-decoration: line-through; }
+  .tinyrte-buttons .icon-sprite, .tinyrte-buttons .JustifyLeft, .tinyrte-buttons .JustifyCenter, .tinyrte-buttons .JustifyRight, .tinyrte-buttons .InsertUnorderedList, .tinyrte-buttons .InsertOrderedList, .tinyrte-buttons .image, .tinyrte-buttons .link, .tinyrte-buttons .unlink {
+    background: url("../img/tinyrte.png") no-repeat; }
+  .tinyrte-buttons .JustifyLeft,
+  .tinyrte-buttons .JustifyCenter,
+  .tinyrte-buttons .JustifyRight,
+  .tinyrte-buttons .InsertUnorderedList,
+  .tinyrte-buttons .InsertOrderedList,
+  .tinyrte-buttons .image,
+  .tinyrte-buttons .link,
+  .tinyrte-buttons .unlink {
+    margin-top: 9px;
+    text-indent: -99999em; }
+  .tinyrte-buttons .JustifyLeft {
+    background-position: 0 -276px; }
+  .tinyrte-buttons .JustifyCenter {
+    background-position: 0 -184px; }
+  .tinyrte-buttons .JustifyRight {
+    background-position: 0 -230px; }
+  .tinyrte-buttons .InsertUnorderedList {
+    background-position: 0 -138px; }
+  .tinyrte-buttons .InsertOrderedList {
+    background-position: 0 -46px; }
+  .tinyrte-buttons .image {
+    background-position: 0 -92px; }
+  .tinyrte-buttons .link {
+    background-position: 0 0; }
+  .tinyrte-buttons .unlink {
+    background-position: 0 -322px; }
+
+/*# sourceMappingURL=tinyrte.css.map */
